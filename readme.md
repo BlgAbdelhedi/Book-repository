@@ -11,7 +11,9 @@ Authors and Books have a many to many relationship.
 Users can select authors during book creation/edit .
 
 ### Performance
+
 **Memoization:** Components are wrapped inside React.memo to apply memoization preventing unnecessary re-renders unless props or relevant state changes.
+
 **Function Caching:** UseCallback for major functions: fetch / handle*Success / handleSubmits:
 This ensures these functions retain stable references between renders, especially important when passing them as props or dependencies.  
 ### Ux
@@ -22,12 +24,17 @@ Loading feedback / Initial backdrop
 
 ## Init/Run/Test:
 cd **/server**
+
 npm install
-npm run start
+
 npm run test
 
+npm run start
+
 cd **/client**
+
 npm install
+
 npm run start
 
 
