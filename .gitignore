@@ -1,0 +1,7 @@
+server/node_modules/
+server/dist/
+server/src/tests/integration/*.js
+server/src/tests/unit/*.js
+
+client/node_modules/
+client/dist/
