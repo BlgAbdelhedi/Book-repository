@@ -17,7 +17,7 @@ Users can select authors during book creation/edit .
 **Function Caching:** UseCallback for major functions: fetch / handle*Success / handleSubmits:
 This ensures these functions retain stable references between renders, especially important when passing them as props or dependencies.  
 ### Ux
-Users can now search for authors in an autocomplete search input, if the result is not found in the existing list they can create an Author on the fly.
+When creating or updating a book users can now search for authors in an autocomplete search input, if the result is not found in the existing list they can create a new Author on the fly.
 
 Transitions on operations
 
