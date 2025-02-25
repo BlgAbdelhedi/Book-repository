@@ -1,14 +1,10 @@
 import React from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import { ErrorSnackbarProps } from '../models/ErrorSnackbarProps';
 
-interface Props {
-  open: boolean;
-  message: string;
-  onClose: () => void;
-}
 
-const ErrorSnackbar: React.FC<Props> = ({ open, message, onClose }) => {
+const ErrorSnackbar: React.FC<ErrorSnackbarProps> = ({ open, message, onClose }) => {
   return (
     <Snackbar
       open={open}

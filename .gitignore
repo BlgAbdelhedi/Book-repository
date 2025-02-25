@@ -1,8 +1,7 @@
 server/node_modules/
 server/dist/
 server/database.sqlite
-server/src/tests/integration/*.js
-server/src/tests/unit/*.js
+server/src/tests/*.js
 
 client/node_modules/
 client/dist/

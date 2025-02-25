@@ -1,23 +1,12 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback
-} from 'react';
-import {
-  Box,
-  TextField,
-  Button,
-  Autocomplete,
-  CircularProgress
-} from '@mui/material';
-import { createFilterOptions } from '@mui/material/Autocomplete';
+import React, { useEffect, useState, useCallback } from 'react';
+import { Box, Button, CircularProgress } from '@mui/material';
 import { api } from '../services/api';
-import { Author, ExtendedAuthor } from '../models/Author';
+import { Author } from '../models/Author';
 import { STRINGS } from '../constants/string.const';
 import '../styles/bookForm.scss';
 import { BookFormProps } from '../models/BookFormProps';
-
-const filter = createFilterOptions<ExtendedAuthor>();
+import BookInputs from './BookInputs';
+import AuthorsAutocomplete from './AuthorsAutocomplete';
 
 function BookForm({
   initialBook,
@@ -73,80 +62,24 @@ function BookForm({
     }
   }, [selectedAuthors, title, isbn, initialBook, onSave, onError]);
 
-  const handleAuthorsChange = useCallback(async (
-    event: React.SyntheticEvent,
-    newValue: ExtendedAuthor[]
-  ) => {
-    const newItemIndex = newValue.findIndex((item) => item.isNew);
-    if (newItemIndex !== -1) {
-      const displayName = newValue[newItemIndex].name;
-      const match = displayName.match(/^Create\sAuthor\s+"(.+)"$/);
-      const actualName = match ? match[1] : displayName;
-      try {
-        const res = await api.post('/authors', { name: actualName });
-        const createdAuthor: Author = res.data;
-        newValue[newItemIndex] = createdAuthor;
-        setAuthorList((prev) => [...prev, createdAuthor]);
-      } catch (err: any) {
-        onError(err.response?.data?.error || '');
-        newValue.splice(newItemIndex, 1);
-      }
-    }
-    setSelectedAuthors(newValue);
-  }, [onError]);
-
   return (
     <Box className="book-form">
       <form onSubmit={handleSubmit}>
         <Box className="book-form__row">
-          <TextField
-            className="book-form__field"
-            label={STRINGS.title}
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
+          <BookInputs
+            title={title}
+            setTitle={setTitle}
+            isbn={isbn}
+            setIsbn={setIsbn}
           />
-          <TextField
-            className="book-form__field"
-            label={STRINGS.isbn}
-            value={isbn}
-            onChange={(e) => setIsbn(e.target.value)}
-            required
-          />
-          <Autocomplete
-            multiple
-            className="book-form__field"
-            options={authorList as ExtendedAuthor[]}
-            value={selectedAuthors as ExtendedAuthor[]}
-            onChange={handleAuthorsChange}
-            getOptionLabel={(option) => option.name}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            filterOptions={(options, params) => {
-              const filtered = filter(options, params);
-              const { inputValue } = params;
-              const isExisting = options.some(
-                (opt) => opt.name.toLowerCase() === inputValue.toLowerCase()
-              );
-              if (inputValue !== '' && !isExisting) {
-                filtered.push({
-                  id: -1,
-                  name: `Create Author "${inputValue}"`,
-                  isNew: true
-                });
-              }
-              return filtered;
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label={STRINGS.authors}
-                placeholder={STRINGS.selectOrType}
-              />
-            )}
-            sx={{ minWidth: 300 }}
+          <AuthorsAutocomplete
+            authorList={authorList}
+            setAuthorList={setAuthorList}
+            selectedAuthors={selectedAuthors}
+            setSelectedAuthors={setSelectedAuthors}
+            onError={onError}
           />
         </Box>
-
         <Box className="book-form__button-row">
           <Button
             type="submit"
