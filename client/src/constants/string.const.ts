@@ -6,6 +6,7 @@ export const STRINGS = {
   processing: 'Processing...',
   saving: 'Saving...',
   cancel: 'Cancel',
+  confirm: 'Confirm',
   title: 'Title',
   isbn: 'ISBN',
   authors: 'Authors',
@@ -16,4 +17,6 @@ export const STRINGS = {
   createdBookFeedback: 'Created book successfully',
   updatedBookFeedback: 'Updated book successfully',
   deletedBookFeedback: 'Deleted book successfully',
+  confirmDeletion: 'Confirm Deletion',
+  deletionCheck: 'Are you sure you want to delete the book',
 };

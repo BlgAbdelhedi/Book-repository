@@ -19,7 +19,11 @@ import {
   IconButton,
   Snackbar,
   Fade,
-  Alert
+  Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
@@ -30,6 +34,8 @@ import { Author } from '../models/Author';
 import { Book } from '../models/Book';
 import '../styles/bookList.scss';
 import { BookResponse } from '../models/BookResponse';
+import { PaperComponent } from './PaperComponent';
+
 
 function BookList() {
   const [books, setBooks] = useState<Book[]>([]);
@@ -43,6 +49,9 @@ function BookList() {
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [bookToDelete, setBookToDelete] = useState<Book | null>(null);
 
   const showSnackbar = useCallback((message: string) => {
     setSnackbarMessage(message);
@@ -62,7 +71,7 @@ function BookList() {
       setBooks(res.data.data);
       setPages(res.data.pages);
       setPage(res.data.page);
-    } catch {}
+    } catch { }
     finally {
       const elapsed = performance.now() - start;
       const remaining = 500 - elapsed;
@@ -92,13 +101,29 @@ function BookList() {
     showSnackbar(STRINGS.updatedBookFeedback);
   }, [page, search, fetchBooks, showSnackbar]);
 
+  const handleOpenDeleteDialog = (book: Book) => {
+    setBookToDelete(book);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!bookToDelete) return;
+    setDeleteDialogOpen(false);
+    await handleDelete(bookToDelete.id!);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setDeleteDialogOpen(false);
+    setBookToDelete(null);
+  };
+
   const handleDelete = useCallback(async (id: number) => {
     setIsActionLoading(true);
     const start = performance.now();
     try {
       await api.delete(`/books/${id}`);
       showSnackbar(STRINGS.deletedBookFeedback);
-    } catch {}
+    } catch { }
     finally {
       const elapsed = performance.now() - start;
       const remaining = 500 - elapsed;
@@ -188,10 +213,6 @@ function BookList() {
                 </TableRow>
               </TableHead>
 
-              {/*
-                Wrap the table body with TransitionGroup.
-                Each row uses CSSTransition with the class name 'book-list__fade'.
-              */}
               <TransitionGroup component={TableBody}>
                 {books.map((b) => {
                   const isEditing = editingBookId === b.id;
@@ -250,7 +271,7 @@ function BookList() {
                           <Button
                             variant="outlined"
                             color="error"
-                            onClick={() => handleDelete(b.id)}
+                            onClick={() => handleOpenDeleteDialog(b)}
                           >
                             {STRINGS.delete}
                           </Button>
@@ -277,6 +298,36 @@ function BookList() {
           </Box>
         </>
       )}
+
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleCloseDeleteDialog}
+        PaperComponent={PaperComponent}
+        aria-labelledby="draggable-dialog-title"
+      >
+        <DialogTitle
+          style={{ cursor: 'move' }}
+          className="draggable-dialog-title"
+          id="draggable-dialog-title"
+        >
+          {STRINGS.confirmDeletion}
+        </DialogTitle>
+        <DialogContent dividers>
+          {STRINGS.deletionCheck} "{bookToDelete?.title}" ?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog} variant="outlined">
+            {STRINGS.cancel}
+          </Button>
+          <Button
+            onClick={handleConfirmDelete}
+            variant="contained"
+            color="error"
+          >
+            {STRINGS.confirm}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Snackbar
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
