@@ -304,6 +304,7 @@ function BookList() {
         onClose={handleCloseDeleteDialog}
         PaperComponent={PaperComponent}
         aria-labelledby="draggable-dialog-title"
+        className="book-list__dialog"
       >
         <DialogTitle
           style={{ cursor: 'move' }}

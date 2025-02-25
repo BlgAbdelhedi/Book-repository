@@ -25,6 +25,8 @@ Snackbar to give feedback on success / error
 
 Loading feedback / Initial backdrop
 
+Confirmation dialog for important operations : delete
+
 ## Init/Run/Test:
 cd **/server**
 
